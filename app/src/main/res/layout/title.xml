@@ -5,10 +5,7 @@
     android:layout_height="match_parent"
     android:background="#00BFFF"
     android:orientation="horizontal">
-<LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1">
+
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -16,11 +13,18 @@
         android:adjustViewBounds="true"
         android:background="@drawable/bluetooth_alt"
         />
-    <TextView
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_weight="1">
+    <Button
+        android:id="@+id/ble_advertising"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:onClick="onGattServerButtonClicked"
+        android:background="@drawable/ble_scan_button"
         android:gravity="center"
-        android:text="@string/app_name"
+        android:text="@string/ble_start_gatt_server"
         android:textColor="@color/white"/>
     </LinearLayout>
     <View
@@ -36,9 +40,9 @@
         android:id="@+id/ble_scan"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:onClick="onButtonClicked"
+        android:onClick="onScanButtonClicked"
         android:background="@drawable/ble_scan_button"
-        android:text="Start Scan"
+        android:text="@string/ble_start_scan"
         android:textColor="@color/white"
         android:layout_alignParentRight="true"/>
     </LinearLayout>

@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,7 +34,7 @@ public class BLEMainActivity extends Activity implements
 	private List<BluetoothDevice> listDevice=  new ArrayList<BluetoothDevice>();
 	private MyAdapter mMyAdapter;
 	private long ConnectingCount = 0;
-
+	private  GattServerActivity mGattServerActivity;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -47,9 +48,9 @@ public class BLEMainActivity extends Activity implements
 	void  onInit(){
 		final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
 		btAdapter = bluetoothManager.getAdapter();
+		textView =  findViewById(R.id.text);
 
-		textView = (TextView) findViewById(R.id.text);
-		mDeviceList =(ListView)findViewById(R.id.htc_device_list);
+		mDeviceList = findViewById(R.id.htc_device_list);
 		mDeviceList.setBackgroundColor(Color.WHITE);
 		mMyAdapter = new MyAdapter(BLEMainActivity.this, listDevice);
 		mDeviceList.setAdapter(mMyAdapter);
@@ -63,7 +64,7 @@ public class BLEMainActivity extends Activity implements
 				Message msg = new Message();
 				msg.what = BluetoothProfile.STATE_CONNECTING;
 				h.sendMessage(msg);
-			gatt = mBluetoothDevice.connectGatt(BLEMainActivity.this, true, gattCallback);
+			gatt = mBluetoothDevice.connectGatt(BLEMainActivity.this, false, gattCallback);
 			mDeviceList.setVisibility(View.INVISIBLE);
 
 		}
@@ -100,6 +101,9 @@ public class BLEMainActivity extends Activity implements
 				}
 			}
 		};
+
+		mGattServerActivity = new GattServerActivity();
+		mGattServerActivity.initGattServer(bluetoothManager, h);
 	}
 
 	@Override
@@ -114,16 +118,75 @@ public class BLEMainActivity extends Activity implements
 		super.onStop();
 	}
 
-	public void onButtonClicked(View v) {
+	public void onScanButtonClicked(View v) {
 		Log.d("Chris", "onButtonClicked");
+		onStopAdver();
+		Button mButton = findViewById(R.id.ble_scan);
+		mDeviceList.setVisibility(View.VISIBLE);
+		if(mButton.getText().equals("Start Scan")) {
+			clearScanState();
+			textView.setText("start scan ---\n\n" );
+			btAdapter.startLeScan(this);
+			mDeviceList.setVisibility(View.VISIBLE);
+			mButton.setText(R.string.ble_stop_scan);
+		}else{
+			btAdapter.stopLeScan(this);
+			mButton.setText(R.string.ble_start_scan);
+		}
+
+	}
+
+	public  void onGattServerButtonClicked(View v){
+
+		Log.d("Chris", "onGattServerButtonClicked");
+		Button mButton = findViewById(R.id.ble_advertising);
+		onStopScan();
+		clearScanState();
+		if(mButton.getText().equals("Start Advertising")) {
+			mGattServerActivity.startAdvertising();
+			mGattServerActivity.startServer();
+			textView.setText("Start Advertising\n");
+			textView.append("Advertising Name: "+btAdapter.getName()+"\n"
+						+"Advertising Address: "+btAdapter.getAddress()+"\n");
+			mButton.setText(R.string.ble_stop_gatt_server);
+		}else{
+			mGattServerActivity.stopServer();
+			mGattServerActivity.stopAdvertising();
+			mButton.setText(R.string.ble_start_gatt_server);
+			textView.setText("Stop Advertising\n");
+		}
+	}
+
+	private void clearScanState() {
+		//Scan
 		ConnectingCount = 0;
-		textView.setText("Scan start ===========\n");
 		btAdapter.stopLeScan(this);
 		listDevice.clear();
 		mMyAdapter.setList(listDevice);
 		mMyAdapter.notifyDataSetChanged();
-		btAdapter.startLeScan(this);
-		mDeviceList.setVisibility(View.VISIBLE);
+		mDeviceList.setVisibility(View.INVISIBLE);
+		textView.setText("");
+
+	}
+
+	private  void onStopScan(){
+
+		Button mButton = findViewById(R.id.ble_scan);
+		if(!mButton.getText().equals("Start Scan")) {
+			btAdapter.stopLeScan(this);
+			mButton.setText(R.string.ble_start_scan);
+		}
+	}
+
+	private  void onStopAdver(){
+		//Advertising
+		Button mButton = findViewById(R.id.ble_advertising);
+		if(!mButton.getText().equals("Start Advertising")) {
+			mGattServerActivity.stopServer();
+			mGattServerActivity.stopAdvertising();
+		//	textView.setText("Stop Advertising\n");
+		}
+		//textView.setText("");
 	}
 
 	@Override

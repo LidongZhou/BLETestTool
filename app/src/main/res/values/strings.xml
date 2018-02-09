@@ -1,5 +1,8 @@
 <resources>
-
     <string name="app_name">HTC BLE</string>
-
+    <string name="gatt_server">Gatt Server</string>
+    <string name="ble_start_scan">"Start Scan"</string>
+    <string name="ble_stop_scan">"Stop Scanning"</string>
+    <string name="ble_start_gatt_server">"Start Advertising"</string>
+    <string name="ble_stop_gatt_server">"Stop Advertising"</string>
 </resources>
