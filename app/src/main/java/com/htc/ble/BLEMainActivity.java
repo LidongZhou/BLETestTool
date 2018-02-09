@@ -130,6 +130,7 @@ public class BLEMainActivity extends Activity implements
 			mDeviceList.setVisibility(View.VISIBLE);
 			mButton.setText(R.string.ble_stop_scan);
 		}else{
+			textView.setText("stop scan ---\n\n" );
 			btAdapter.stopLeScan(this);
 			mButton.setText(R.string.ble_start_scan);
 		}
@@ -184,6 +185,7 @@ public class BLEMainActivity extends Activity implements
 		if(!mButton.getText().equals("Start Advertising")) {
 			mGattServerActivity.stopServer();
 			mGattServerActivity.stopAdvertising();
+			mButton.setText(R.string.ble_start_gatt_server);
 		//	textView.setText("Stop Advertising\n");
 		}
 		//textView.setText("");
