@@ -125,12 +125,14 @@ public class BLEMainActivity extends Activity implements
 		mDeviceList.setVisibility(View.VISIBLE);
 		if(mButton.getText().equals("Start Scan")) {
 			clearScanState();
-			textView.setText("start scan ---\n\n" );
+			textView.setText("Client Mode:\n\n" );
+			textView.append("start scan ---\n\n" );
 			btAdapter.startLeScan(this);
 			mDeviceList.setVisibility(View.VISIBLE);
 			mButton.setText(R.string.ble_stop_scan);
 		}else{
-			textView.setText("stop scan ---\n\n" );
+			textView.setText("Client Mode:\n\n" );
+			textView.append("stop scan ---\n\n" );
 			btAdapter.stopLeScan(this);
 			mButton.setText(R.string.ble_start_scan);
 		}
@@ -146,7 +148,8 @@ public class BLEMainActivity extends Activity implements
 		if(mButton.getText().equals("Start Advertising")) {
 			mGattServerActivity.startAdvertising();
 			mGattServerActivity.startServer();
-			textView.setText("Start Advertising\n");
+			textView.setText("Server Mode:\n\n" );
+			textView.append("Start Advertising\n");
 			textView.append("Advertising Name: "+btAdapter.getName()+"\n"
 						+"Advertising Address: "+btAdapter.getAddress()+"\n");
 			mButton.setText(R.string.ble_stop_gatt_server);
@@ -154,7 +157,8 @@ public class BLEMainActivity extends Activity implements
 			mGattServerActivity.stopServer();
 			mGattServerActivity.stopAdvertising();
 			mButton.setText(R.string.ble_start_gatt_server);
-			textView.setText("Stop Advertising\n");
+			textView.setText("Server Mode:\n\n" );
+			textView.append("Stop Advertising\n");
 		}
 	}
 
